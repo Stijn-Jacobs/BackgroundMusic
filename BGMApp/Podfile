@@ -1,0 +1,3 @@
+target 'Background Music' do
+  pod 'MIKMIDI'
+end

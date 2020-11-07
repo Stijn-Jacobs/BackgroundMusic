@@ -384,6 +384,7 @@
 		1CF5423A1EAAEE4300445AD8 /* BGMAudioDevice.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BGMAudioDevice.cpp; sourceTree = "<group>"; };
 		1CF5423B1EAAEE4300445AD8 /* BGMAudioDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGMAudioDevice.h; sourceTree = "<group>"; };
 		1CF69BA41BCFF59C009B5D1F /* BGMApp.profdata */ = {isa = PBXFileReference; lastKnownFileType = file; path = BGMApp.profdata; sourceTree = "<group>"; };
+		253569217CA6C022B5464F00 /* libPods-Background Music.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Background Music.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		270A84501E0044EE00F13C99 /* ScriptingBridge.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ScriptingBridge.framework; path = System/Library/Frameworks/ScriptingBridge.framework; sourceTree = SDKROOT; };
 		271677B81C6CBDFA0080B0A2 /* CACFNumber.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CACFNumber.cpp; path = PublicUtility/CACFNumber.cpp; sourceTree = "<group>"; };
 		271677B91C6CBDFA0080B0A2 /* CACFNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CACFNumber.h; path = PublicUtility/CACFNumber.h; sourceTree = "<group>"; };
@@ -433,6 +434,9 @@
 		27F7D48F1D2483B100821C4B /* BGMDecibel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BGMDecibel.m; path = "Music Players/BGMDecibel.m"; sourceTree = "<group>"; };
 		27F7D4911D2484A300821C4B /* Decibel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Decibel.h; path = "Music Players/Decibel.h"; sourceTree = "<group>"; };
 		27FB8C2E1DE468320084DB9D /* BGM_Utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BGM_Utils.cpp; path = ../SharedSource/BGM_Utils.cpp; sourceTree = "<group>"; };
+		478DD31322660688AEC9EED7 /* Pods-Background Music.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Background Music.release.xcconfig"; path = "Target Support Files/Pods-Background Music/Pods-Background Music.release.xcconfig"; sourceTree = "<group>"; };
+		7C1F9FDD69B012CD785ED652 /* Pods-Background Music.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Background Music.debug.xcconfig"; path = "Target Support Files/Pods-Background Music/Pods-Background Music.debug.xcconfig"; sourceTree = "<group>"; };
+		9BBD6283D70D2663B9D1EFDB /* Pods-Background Music.debugopt.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Background Music.debugopt.xcconfig"; path = "Target Support Files/Pods-Background Music/Pods-Background Music.debugopt.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -487,6 +491,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		13712AD0A11954929AE59943 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				7C1F9FDD69B012CD785ED652 /* Pods-Background Music.debug.xcconfig */,
+				478DD31322660688AEC9EED7 /* Pods-Background Music.release.xcconfig */,
+				9BBD6283D70D2663B9D1EFDB /* Pods-Background Music.debugopt.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		1C09150623F010FB001EB0E1 /* Scripts */ = {
 			isa = PBXGroup;
 			children = (
@@ -641,6 +655,7 @@
 				1CB8B3371BBA75EF000E2DD1 /* Products */,
 				1CF69BA31BCFF59C009B5D1F /* OptimizationProfiles */,
 				2743CA1B1D86DA9B0089613B /* Frameworks */,
+				13712AD0A11954929AE59943 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -839,6 +854,7 @@
 				1C1963021BCAC160008A4DF7 /* CoreAudio.framework */,
 				2795970D1C91589B00A002FB /* CoreFoundation.framework */,
 				2743CA1C1D86DA9B0089613B /* Foundation.framework */,
+				253569217CA6C022B5464F00 /* libPods-Background Music.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -861,6 +877,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1CB8B3531BBA75F0000E2DD1 /* Build configuration list for PBXNativeTarget "Background Music" */;
 			buildPhases = (
+				CF66AE936F8FDACB6E4ED535 /* [CP] Check Pods Manifest.lock */,
 				1CB8B3321BBA75EF000E2DD1 /* Sources */,
 				1CB8B3331BBA75EF000E2DD1 /* Frameworks */,
 				1CB8B3341BBA75EF000E2DD1 /* Resources */,
@@ -1101,6 +1118,28 @@
 			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/bash;
 			shellScript = "/bin/bash \"$SRCROOT/BGMXPCHelper/post_install.sh\"\n";
+		};
+		CF66AE936F8FDACB6E4ED535 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Background Music-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1447,6 +1486,7 @@
 		};
 		1C4603C61C05963C00150F9B /* DebugOpt */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9BBD6283D70D2663B9D1EFDB /* Pods-Background Music.debugopt.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
@@ -1457,7 +1497,12 @@
 				DEPLOYMENT_POSTPROCESSING = NO;
 				DWARF_DSYM_FILE_NAME = "$(EXECUTABLE_NAME).dSYM";
 				DWARF_DSYM_FOLDER_PATH = "$(CONFIGURATION_BUILD_DIR)/$(EXECUTABLE_FOLDER_PATH)";
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = NO;
 				INFOPLIST_FILE = BGMApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bearisdriving.BGM.App;
@@ -1636,6 +1681,7 @@
 		};
 		1CB8B3541BBA75F0000E2DD1 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7C1F9FDD69B012CD785ED652 /* Pods-Background Music.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
@@ -1646,7 +1692,12 @@
 				DEPLOYMENT_POSTPROCESSING = NO;
 				DWARF_DSYM_FILE_NAME = "$(EXECUTABLE_NAME).dSYM";
 				DWARF_DSYM_FOLDER_PATH = "$(CONFIGURATION_BUILD_DIR)/$(EXECUTABLE_FOLDER_PATH)";
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = NO;
 				INFOPLIST_FILE = BGMApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bearisdriving.BGM.App;
@@ -1661,6 +1712,7 @@
 		};
 		1CB8B3551BBA75F0000E2DD1 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 478DD31322660688AEC9EED7 /* Pods-Background Music.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
@@ -1671,6 +1723,10 @@
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DWARF_DSYM_FILE_NAME = "$(EXECUTABLE_NAME).dSYM";
 				DWARF_DSYM_FOLDER_PATH = "$(CONFIGURATION_BUILD_DIR)/$(EXECUTABLE_FOLDER_PATH)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=0",
 					"CoreAudio_Debug=0",
@@ -1680,7 +1736,8 @@
 					"CoreAudio_StopOnThrow=0",
 					"CoreAudio_UseSysLog=1",
 				);
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = NO;
 				INFOPLIST_FILE = BGMApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				LLVM_LTO = YES;

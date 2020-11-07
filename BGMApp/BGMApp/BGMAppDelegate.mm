@@ -40,10 +40,10 @@
 #import "BGMUserDefaults.h"
 #import "BGMXPCListener.h"
 #import "SystemPreferences.h"
+#import <MIKMIDI/MIKMIDI.h>
 
 // System Includes
 #import <AVFoundation/AVCaptureDevice.h>
-
 
 #pragma clang assume_nonnull begin
 
@@ -53,7 +53,7 @@ static NSString* const kOptShowDockIcon      = @"--show-dock-icon";
 @implementation BGMAppDelegate {
     // The button in the system status bar that shows the main menu.
     BGMStatusBarItem* statusBarItem;
-    
+
     // Only show the 'BGMXPCHelper is missing' error dialog once.
     BOOL haveShownXPCHelperErrorMessage;
 
@@ -76,13 +76,13 @@ static NSString* const kOptShowDockIcon      = @"--show-dock-icon";
 
 - (void) awakeFromNib {
     [super awakeFromNib];
-    
+
     // Show BGMApp in the dock, if the command-line option for that was passed. This is used by the
     // UI tests.
     if ([NSProcessInfo.processInfo.arguments indexOfObject:kOptShowDockIcon] != NSNotFound) {
         [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
     }
-    
+
     haveShownXPCHelperErrorMessage = NO;
 
     // Set up audioDevices, which coordinates BGMDevice and the output device. It manages
@@ -102,7 +102,7 @@ static NSString* const kOptShowDockIcon      = @"--show-dock-icon";
 
 - (void) applicationDidFinishLaunching:(NSNotification*)aNotification {
     #pragma unused (aNotification)
-    
+
     // Log the version/build number.
     //
     // TODO: NSLog should only be used for logging errors.
@@ -134,9 +134,9 @@ static NSString* const kOptShowDockIcon      = @"--show-dock-icon";
 
     autoPauseMusic = [[BGMAutoPauseMusic alloc] initWithAudioDevices:audioDevices
                                                         musicPlayers:musicPlayers];
-    
+
     [self setUpMainMenu];
-    
+
     xpcListener = [[BGMXPCListener alloc] initWithAudioDevices:audioDevices
                                   helperConnectionErrorHandler:^(NSError* error) {
                                       NSLog(@"BGMAppDelegate::applicationDidFinishLaunching: (helperConnectionErrorHandler) "
@@ -144,7 +144,68 @@ static NSString* const kOptShowDockIcon      = @"--show-dock-icon";
                                             error);
                                       [self showXPCHelperErrorMessage:error];
                                   }];
+
+    for (MIKMIDIDevice* device in [MIKMIDIDeviceManager sharedDeviceManager].availableDevices) {
+        //nanoKONTROL2
+        NSLog(@"Found %@", device.displayName);
+        if ([device.displayName containsString:@"nanoKONTROL2"]) {
+            [self setupDevice:device];
+        }
+    }
 }
+
+- (void) setupDevice: (MIKMIDIDevice*) device {
+
+    MIKMIDISourceEndpoint *endpoint = device.entities.firstObject.sources.firstObject;
+    [[MIKMIDIDeviceManager sharedDeviceManager] connectInput:endpoint error:NULL eventHandler:^(MIKMIDISourceEndpoint *eventSource, NSArray *commands) {
+        for (MIKMIDICommand *command in commands) {
+            if (command != nil) {
+                if (command.commandType == MIKMIDICommandTypeControlChange) {
+                    MIKMIDIControlChangeCommand *com = command;
+                    unsigned long channel = com.controllerNumber;
+                    int volume = ((unsigned long)com.controllerValue) / (float)127 * (float)100;
+                    if (channel >= 0 && channel <= 5) {
+                        [self setAppVolume:volume index:channel];
+                    } else if (channel > 5 && channel <= 7) {
+
+                    }
+                }
+            }
+         }
+    }];
+
+    [self runBlink:device];
+}
+
+- (void) setAppVolume: (int) volume index:(int)index {
+    NSArray* apps = [[NSWorkspace sharedWorkspace] runningApplications];
+
+    for (UInt32 i = 0; i < [apps count]; i++) {
+        NSRunningApplication* application = apps[i];
+
+        if ([application.localizedName containsString:@"Chrome"] && index == 1 ||
+            [application.localizedName containsString:@"Spotify"] && index == 0 ||
+            [application.localizedName containsString:@"Discord"] && index == 3){
+            [appVolumes setVolume:volume / 2 forAppWithProcessID:application.processIdentifier bundleID:application.bundleIdentifier];
+        }
+    }
+}
+
+- (void) runBlink: (MIKMIDIDevice*)device  {
+//    MIKMIDIDestinationEndpoint *destination = device.entities.firstObject.destinations.firstObject;
+//    NSMutableArray *commands = [NSMutableArray new];
+//    [commands addObject:[MIKMutableMIDINoteOnCommand noteOnCommandWithNote:46 velocity:127 channel:46 timestamp:[NSDate date]]];
+//    [[MIKMIDIDeviceManager sharedDeviceManager] sendCommands:commands toEndpoint:destination error:nil];
+//    [NSTimer scheduledTimerWithTimeInterval:0.5f target:self selector: @selector(runBlink:) userInfo:nil repeats:NO];
+}
+
+- (void) setOutputVolume: (int) volume {
+    //TODO
+//    [preferredOutputDevices findPreferredDevice]
+}
+
+
+
 
 // Returns NO if (and only if) BGMApp is about to terminate because of a fatal error.
 - (BOOL) initAudioDeviceManager {
@@ -301,12 +362,12 @@ static NSString* const kOptShowDockIcon      = @"--show-dock-icon";
 
 - (void) applicationWillTerminate:(NSNotification*)aNotification {
     #pragma unused (aNotification)
-    
+
     DebugMsg("BGMAppDelegate::applicationWillTerminate");
 
     // Change the user's default output device back.
     NSError* error = [audioDevices unsetBGMDeviceAsOSDefault];
-    
+
     if (error) {
         [self showSetDeviceAsDefaultError:error
                                   message:@"Failed to reset your system's audio output device."
@@ -361,11 +422,11 @@ static NSString* const kOptShowDockIcon      = @"--show-dock-icon";
 - (void) showXPCHelperErrorMessage:(NSError*)error {
     if (!haveShownXPCHelperErrorMessage) {
         haveShownXPCHelperErrorMessage = YES;
-        
+
         // NSAlert should only be used on the main thread.
         dispatch_async(dispatch_get_main_queue(), ^{
             NSAlert* alert = [NSAlert new];
-            
+
             // TODO: Offer to install BGMXPCHelper if it's missing.
             // TODO: Show suppression button?
             [alert setMessageText:@"Error connecting to BGMXPCHelper."];
@@ -405,16 +466,16 @@ exitAfterMessageDismissed:(BOOL)fatal {
                      informativeText:(NSString*)info {
     dispatch_async(dispatch_get_main_queue(), ^{
         NSLog(@"%@ %@ Error: %@", msg, info, error);
-        
+
         NSAlert* alert = [NSAlert alertWithError:error];
         alert.messageText = msg;
         alert.informativeText = info;
-        
+
         [alert addButtonWithTitle:@"OK"];
         [alert addButtonWithTitle:@"Open Sound in System Preferences"];
-        
+
         NSModalResponse buttonClicked = [alert runModal];
-        
+
         if (buttonClicked != NSAlertFirstButtonReturn) {  // 'OK' is the first button.
             [self openSysPrefsSoundOutput];
         }
@@ -424,31 +485,31 @@ exitAfterMessageDismissed:(BOOL)fatal {
 - (void) openSysPrefsSoundOutput {
     SystemPreferencesApplication* __nullable sysPrefs =
         [SBApplication applicationWithBundleIdentifier:@"com.apple.systempreferences"];
-    
+
     if (!sysPrefs) {
         NSLog(@"Could not open System Preferences");
         return;
     }
-    
+
     // In System Preferences, go to the "Output" tab on the "Sound" pane.
     for (SystemPreferencesPane* pane : [sysPrefs panes]) {
         DebugMsg("BGMAppDelegate::openSysPrefsSoundOutput: pane = %s", [pane.name UTF8String]);
-        
+
         if ([pane.id isEqualToString:@"com.apple.preference.sound"]) {
             sysPrefs.currentPane = pane;
-            
+
             for (SystemPreferencesAnchor* anchor : [pane anchors]) {
                 DebugMsg("BGMAppDelegate::openSysPrefsSoundOutput: anchor = %s", [anchor.name UTF8String]);
-                
+
                 if ([[anchor.name lowercaseString] isEqualToString:@"output"]) {
                     DebugMsg("BGMAppDelegate::openSysPrefsSoundOutput: Showing Output in Sound pane.");
-                    
+
                     [anchor reveal];
                 }
             }
         }
     }
-    
+
     // Bring System Preferences to the foreground.
     [sysPrefs activate];
 }
@@ -473,4 +534,3 @@ exitAfterMessageDismissed:(BOOL)fatal {
 @end
 
 #pragma clang assume_nonnull end
-
